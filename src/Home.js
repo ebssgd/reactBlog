@@ -1,29 +1,51 @@
-import { useState, useEffect } from "react";
 import BlogList from "./BlogList";
+import useFetch from "./useFetch";
 
 const Home = () => {
-  const [blogs, setBlogs] = useState([
-    { title: "My new website", body: "lorem ipsum...", author: "Bryan", id: 1 },
-    { title: "Welcome party!", body: "lorem ipsum...", author: "Igor", id: 2 },
-    { title: "Web dev tips", body: "lorem ipsum...", author: "Bryan", id: 3 },
-  ]);
+  const {
+    data: blogs,
+    isPending,
+    error,
+  } = useFetch("http://localhost:8000/blogs");
+  // const [blogs, setBlogs] = useState(null);
+  // const [isPending, setIsPending] = useState(true);
+  // const [error, setError] = useState(null);
+  // { title: "My new website", body: "lorem ipsum...", author: "Bryan", id: 1 },
+  // { title: "Welcome party!", body: "lorem ipsum...", author: "Igor", id: 2 },
+  // { title: "Web dev tips", body: "lorem ipsum...", author: "Bryan", id: 3 },
 
-  const [name, setName] = useState("Mario");
+  //const [name, setName] = useState("Mario");
 
-  const handleDelete = (id) => {
-    const newBlogs = blogs.filter((blog) => blog.id !== id);
-    setBlogs(newBlogs);
-  };
-
-  useEffect(() => {
-    console.log("Use effect ran.");
-    console.log(name);
-  }, [name]); //useEffect runs every time the page rerenders
+  // useEffect(() => {
+  //   fetch("http://localhost:8000/blogs")
+  //     .then((res) => {
+  //       if (!res.ok) {
+  //         throw Error("Could not fetch the data.");
+  //       }
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       //console.log(data);
+  //       setBlogs(data);
+  //       setIsPending(false);
+  //       setError(null);
+  //     })
+  //     .catch((err) => {
+  //       setIsPending(false);
+  //       setError(err.message);
+  //     });
+  //   //console.log("Use effect ran.");
+  //   //console.log(name);//Passing in name to the [] will rerender based on name
+  // }, []); //useEffect runs every time the page rerenders
   //Be careful of using the useState inside useEffect.
   //You may end up in an endless loop of rerenders.
   //The array at the end is the dependency array. If left empty, useEffect
   //only runs on the first time the page renders
   //If there is a value in it, it will rerun any time that element changes
+
+  //We have to use .then here. async/await won't work.
+  //You would have to create an external function, pass it in here
+  //and then it would be fine.
 
   //let name = "Mario"; //This variable isn't reactive.
   //const [name, setName] = useState("Mario"); //This sets the original value
@@ -47,9 +69,11 @@ const Home = () => {
 
   return (
     <div className="home">
-      <BlogList blogs={blogs} title="All Blogs!" handleDelete={handleDelete} />
-      <button onClick={() => setName("Luigi")}>Change name</button>
-      <p>{name}</p>
+      {error && <div>{error}</div>}
+      {isPending && <div>Loading...</div>}
+      {blogs && <BlogList blogs={blogs} title="All Blogs!" />}
+      {/* <button onClick={() => setName("Luigi")}>Change name</button>
+      <p>{name}</p> */}
       {/* <BlogList
         blogs={blogs.filter((blog) => blog.author === "Bryan")}
         title="Bryan's Blogs!"
@@ -88,3 +112,7 @@ export default Home;
 //The handleDelete function is created here because this is where the data is.
 //We want to interact with the data directly.
 //We can pass the function over as a prop
+
+//&& evaluates the left side first. So, if the blogs is null,
+//it won't even bother to check the right side. So, the thing on the left
+//won't ever be rendered if the thing on the right is null
