@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const BlogList = ({ blogs, title }) => {
   //const blogs = props.blogs; //By passing the props Object into the function,
   //we are then able to use it here in order to have it be passed into the function
@@ -8,8 +10,10 @@ const BlogList = ({ blogs, title }) => {
       <h2>{title}</h2>
       {blogs.map((blog) => (
         <div className="blog-preview" key={blog.id}>
-          <h2>{blog.title}</h2>
-          <p>Written by: {blog.author}</p>
+          <Link to={`/blogs/${blog.id}`}>
+            <h2>{blog.title}</h2>
+            <p>Written by: {blog.author}</p>
+          </Link>
           {/* <button onClick={() => handleDelete(blog.id)}>Delete</button> */}
         </div>
       ))}
