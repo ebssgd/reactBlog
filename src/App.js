@@ -51,3 +51,6 @@ export default App;
 //A component is basically a function that must be returned.
 
 //Attributes can be set with variables the way we did here with the link variable
+
+//cd into practice-blog, npm start. Open new terminal(+ button) then
+//cd into practice-blog as well and npx json.server --watch data/db.json --port 8000
